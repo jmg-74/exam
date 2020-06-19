@@ -12,10 +12,11 @@ It is based on the [PyTorch-DP framework](https://github.com/facebookresearch/py
   * **Train model**: `python3 train.py` or `./train.py` (try `-h` to list optional arguments, like `--cpu` if no GPU available,
   `--batch-size`, `--learning-rate`, `epochs`, `--disable-dp`...)
 
-  * Record stats about **accuracy**: `./stats.py`. Parameters to experiment are hard coded, see docstring. Results are stored
+  * Record stats about **accuracy**: `./stats.py`. Parameters to experiment are hard coded, see the docstring. Results are stored
  in experiment_stats/ directory.
 
-  * Record stats about **GPU memory**:  `flowers_mem_monitor.py` may be launched directly to add one line in .cvs file.
-  `flowers_mem_stats.sh` launches `flowers_mem_monitor.py` for different parameters (modify code to chose their values),
+  * Record stats about **GPU memory**:  
+    * `flowers_mem_monitor.py` may be run directly to add one line in .cvs file.
+    * `flowers_mem_stats.sh` launches `flowers_mem_monitor.py` for different parameters (modify code to chose their values),
   results are stored in mem_flowers/
 
