@@ -1,2 +1,2 @@
-# exam
-2020 work
+# Content
+This repository's purpose is to present some productions for my exam...
