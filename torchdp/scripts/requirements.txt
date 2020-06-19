@@ -1,4 +1,2 @@
 matplotlib
-scipy
 numpy
-pandas
