@@ -1,0 +1,4 @@
+Hidden_Units, Batch_size, Fact, Differential_Privacy, Mem_Model_Loaded, Mem_Images_Loaded, Mem_Loss_Gradient, Mem_Model_Computed
+512, 64, 2, Y, 112417280, 122051584, 180380672, 3585267712
+512, 64, 2, Y, 112417280, 122051584, 180380672, 3585267712
+512, 32, 2, Y, 112417280, 117234688, 172195840, 1926231040
