@@ -10,6 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision.models import *
+from collections import OrderedDict
 
 # ===== Ex. from tutorial  =====
 # https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
@@ -210,19 +211,38 @@ def main():
 #    net = vgg16(pretrained=False)
 
     # *** Or semi pre-trained (only "features" layers, no "classifier" ones)
+#    my_local = dict()
     net = vgg16(pretrained=True)
-    for name, param in net.named_parameters():
-    #for param in net.parameters():
-        if param.requires_grad:
-            if name[:8] == "features":
-                param.requires_grad = False
-            else:
-                # Reset param.
-                if name[-4:] == "bias":
-                    param.data.fill_(0)
-                else:  # weight
-                    param.data.uniform_(0.0, 0.1)
-                #print(param.data)
+#    model =  my_local['model']
+
+##    net = utils.convert_batchnorm_modules(net)
+
+    # Freeze existing model parameters for training
+    for param in net.parameters():
+        param.requires_grad = False
+
+    # Get last child module of imported model
+    last_child = list(net.children())[-1]
+
+#    if type(last_child) == torch.nn.modules.linear.Linear:
+#        print("linear")
+#        input_features = last_child.in_features
+#    elif type(last_child) == torch.nn.modules.container.Sequential:
+#        print("not linear")
+    input_features = last_child[0].in_features
+
+    # Add some neww layers to train
+    hidden_units = 512
+    classifier = nn.Sequential(OrderedDict([      ### vgg16 : input_features = 25088
+                                            ('fc1', nn.Linear(input_features, hidden_units)),
+                                            ('relu', nn.ReLU()),
+                                            ###('dropout', nn.Dropout(p=0.5)),
+                                            ('fc2', nn.Linear(hidden_units, 102)),
+                                            ###('relu2', nn.ReLU()),          ## Traces of
+                                            ###('fc3', nn.Linear(256, 102)),  ##  experiments.
+                                            ('output', nn.LogSoftmax(dim=1))
+                                            ]))
+    net.classifier = classifier
 
     # REM: to restart from a saved model
     #net = Net() # Or another choice, then
