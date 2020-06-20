@@ -11,7 +11,8 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision.models import *
 
-# Ex. from tuto.
+# ===== Ex. from tutorial  =====
+# https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -47,7 +48,8 @@ fc3.bias 	 10
 Total 	 89138
 """
 
-# Ex.
+# ===== Ex. from Bytepawn =====
+# http://bytepawn.com/solving-cifar-10-with-pytorch-and-skl.html
 class Net2(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -88,13 +90,6 @@ fc3.bias 	 10
 Total 	 537610
 """
 
-
-#def imshow(img):
-#    img = img / 2 + 0.5     # unnormalize
-#    npimg = img.numpy()
-#    plt.imshow(np.transpose(npimg, (1, 2, 0)))
-#    plt.show()
-
 def param_show(model):
     """Prints how many parameters the net has"""
     total = 0
@@ -107,7 +102,6 @@ def param_show(model):
             total += param.numel()
     print("-----------------------")
     print('Total', '\t', total)
-
 
 
 def train(model, optimizer, criterion, trainloader, epochs,
@@ -141,11 +135,8 @@ def train(model, optimizer, criterion, trainloader, epochs,
             acc, _ = test(model, testloader, categories=False, device=device)
             print(f'Accuracy of the network on the 10000 test images: {acc:.2f} %')
 
-
-
     if save:
         torch.save(model.state_dict(), 'models/cifar10.pth')
-
 
 
 def test(model, testloader, categories=False, device="cpu"):
@@ -178,7 +169,7 @@ def test(model, testloader, categories=False, device="cpu"):
 
     categ_acc = [0.] * 10
     for i in range(10):
-        categ_acc[i] = class_correct[i] / class_total[i]
+        categ_acc[i] = 100 * class_correct[i] / class_total[i]
 
     return 100 * correct / total, categ_acc
 
@@ -190,6 +181,7 @@ def main():
     device_name = "cuda" if torch.cuda.is_available() else "cpu"
     device = torch.device(device_name)
     print("Running on", device_name.upper())
+
     # ===== LOAD DATA =====
     # PIL [0, 1] images to [-1, 1] Tensors
     transform = transforms.Compose(
@@ -211,13 +203,29 @@ def main():
 
     # ===== BUILD NET MODEL =====
 # ***************
-    # Local definition
+    # *** Local definition : Net or Net2
     #net = Net()
-    # Or from torchvision.models
+    # *** Or from torchvision.models
+#    net = vgg16(pretrained=True)
+#    net = vgg16(pretrained=False)
+
+    # *** Or semi pre-trained (only "features" layers, no "classifier" ones)
     net = vgg16(pretrained=True)
+    for name, param in net.named_parameters():
+    #for param in net.parameters():
+        if param.requires_grad:
+            if name[:8] == "features":
+                param.requires_grad = False
+            else:
+                # Reset param.
+                if name[-4:] == "bias":
+                    param.data.fill_(0)
+                else:  # weight
+                    param.data.uniform_(0.0, 0.1)
+                #print(param.data)
 
     # REM: to restart from a saved model
-    #net = Net()
+    #net = Net() # Or another choice, then
     #net.load_state_dict(torch.load(PATH))
 # ***************
 
@@ -229,7 +237,7 @@ def main():
 
     # ===== TRAIN MODEL =====
 # ***************
-    EPOCHS = 6
+    EPOCHS = 10
 # ***************
     print(f"Dataset and network are ready, let's train our model "
           f"(×{EPOCHS} epoch" + ("s" if EPOCHS > 1 else "") + ")...")
