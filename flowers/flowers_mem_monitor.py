@@ -21,6 +21,10 @@ from torch.utils.data import DataLoader
 from torch.cuda import memory_allocated
 from collections import OrderedDict
 
+# To be able to fetch next packages from parent folder
+import sys
+sys.path.append("..")
+
 from torchdp import PrivacyEngine, utils
 
 

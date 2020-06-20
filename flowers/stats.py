@@ -57,8 +57,8 @@ def main():
 
     # ===== TUNING ===========================================================
     # Hyperparameters to test
-    lr_range = [1e-4, 1e-5]                    #####  <== choice (enumeration)
-    batch_size_range = [64, 32, 128, 8, 4,  1] #####  <== choice (enumeration)
+    lr_range = [1e-4] #, 1e-5]                    #####  <== choice (enumeration)
+    batch_size_range = [64] #, 32, 128, 8, 4,  1] #####  <== choice (enumeration)
     epochs = 6                                 #####  <== choice (1 value=max)
     # Number of iteration for each parameter
     iter = 3                                   #####  <== choice (single value)
