@@ -102,7 +102,9 @@ def param_show(model):
             #print("\t", param.numel())
             total += param.numel()
     print("-----------------------")
-    print('Total', '\t', total)
+    print('Total', '\t', total, '_n')
+    for p in model.parameters():
+        print(p.shape)
 
 
 def train(model, optimizer, criterion, trainloader, epochs,
@@ -203,37 +205,43 @@ def main():
                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
     # ===== BUILD NET MODEL =====
+
+    # REM: to restart from a saved model
+    #net = Net() # Or another choice, then
+    #net.load_state_dict(torch.load(PATH))
+
 # ***************
-    # *** Local definition : Net or Net2
-    #net = Net()
-    # *** Or from torchvision.models
-#    net = vgg16(pretrained=True)
-#    net = vgg16(pretrained=False)
+    # 0: home-made net
+    # 1: not pre-trained VGG16
+    # 2: pre-trained VGG16
+    # 3: (not frozen) pre-trained VGG16 + fully connected layer
+    # 4: frozen pre-trained VGG16 + fully connected layer
+####    # 5: not pre-trained VGG16 + fully connected layer ????
+    MODE = 3
+# ***************
 
-    # *** Or semi pre-trained (only "features" layers, no "classifier" ones)
-#    my_local = dict()
-    net = vgg16(pretrained=True)
-#    model =  my_local['model']
+    if MODE == 0:
+        # Local definition : Net or Net2
+        net = Net()
+        optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-##    net = utils.convert_batchnorm_modules(net)
+    elif MODE == 1:
+        net = vgg16(pretrained=False)
+        optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-    # Freeze existing model parameters for training
-    for param in net.parameters():
-        param.requires_grad = False
+    else: #pre-trained
+        net = vgg16(pretrained=True)
 
-    # Get last child module of imported model
-    last_child = list(net.children())[-1]
-
-#    if type(last_child) == torch.nn.modules.linear.Linear:
-#        print("linear")
-#        input_features = last_child.in_features
-#    elif type(last_child) == torch.nn.modules.container.Sequential:
-#        print("not linear")
-    input_features = last_child[0].in_features
-
-    # Add some neww layers to train
-    hidden_units = 512
-    classifier = nn.Sequential(OrderedDict([      ### vgg16 : input_features = 25088
+        if MODE == 4:
+            # Freeze existing model parameters for training
+            for param in net.parameters():
+                param.requires_grad = False
+        if MODE > 2:
+            # Add some neww layers to train
+            last_child = list(net.children())[-1]
+            input_features = last_child[0].in_features
+            hidden_units = 512
+            classifier = nn.Sequential(OrderedDict([      ### vgg16 : input_features = 25088
                                             ('fc1', nn.Linear(input_features, hidden_units)),
                                             ('relu', nn.ReLU()),
                                             ###('dropout', nn.Dropout(p=0.5)),
@@ -242,24 +250,23 @@ def main():
                                             ###('fc3', nn.Linear(256, 102)),  ##  experiments.
                                             ('output', nn.LogSoftmax(dim=1))
                                             ]))
-    net.classifier = classifier
+            net.classifier = classifier
+#            optimizer = optim.Adam(net.classifier.parameters(), lr=0.001)
+            optimizer = optim.SGD(net.classifier.parameters(), lr=0.001)
 
-    # REM: to restart from a saved model
-    #net = Net() # Or another choice, then
-    #net.load_state_dict(torch.load(PATH))
-# ***************
+
+        else: # MODE == 2
+            optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     net.to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
-
     param_show(net)
 
     # ===== TRAIN MODEL =====
 # ***************
     EPOCHS = 10
 # ***************
-    print(f"Dataset and network are ready, let's train our model "
+    print(f"Dataset and network are ready (mode {MODE}), let's train our model "
           f"(×{EPOCHS} epoch" + ("s" if EPOCHS > 1 else "") + ")...")
     # Remove last parameter (testloader) to avoid tests after each epoch
     train(net, optimizer, criterion, trainloader, EPOCHS, device,
