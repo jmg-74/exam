@@ -5,7 +5,7 @@ It is based on the [PyTorch-DP framework](https://github.com/facebookresearch/py
 
 1. A **notebook** that presents the budget computation of Differential Privacy with PyTorch-DP and links to properties in several articles for justifications. You can either [read it or download it](https://github.com/jmg-74/exam/blob/master/torchdp/scripts/DP_Computation_in_SGM.ipynb) to use on your own server or run it online (quite slow to launch) thanks to [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jmg-74/exam/master?filepath=torchdp%2Fscripts%2FDP_Computation_in_SGM.ipynb "Tip: right clic / open in new tab...")
 
-2. An attempt to **convert "102-flowers" DL model to a DP version**
+2. An attempt to **convert "102-flowers" DL model to a DP version**, see `flowers/` directory.
   * First, once and for all : download data.
     * `mkdir data/ && cd data && wget https://s3.amazonaws.com/content.udacity-data.com/nd089/flower_data.tar.gz`
     * `tar xvf flower_data.tar.gz && cd ..`
@@ -21,8 +21,17 @@ It is based on the [PyTorch-DP framework](https://github.com/facebookresearch/py
     * `flowers_mem_stats.sh` launches `flowers_mem_monitor.py` for different parameters (modify code to chose their values),
   results are stored in mem_flowers/
 
-3. Other stuff
-  * Similar functions about MNIST dataset: `mnist_train.py`, `mnist_mem_stats.sh`, `mnist_mem_monitor.py`.
+3. An other attempt on **cifar10** dataset.
+  * First without DP : 
+    * (net = home-made simple model)
+    * net = fully pre-trained VGG16
+    * net = not pre-trained VGG16
+    * net =  pre-trained on "features" only, not on "classifier" layers.
+  * Then try to convert to DP version.
+
+4. Other stuff
+  * Similar functions (than one of 'flowers') about MNIST dataset, 
+    see `mnist_train.py`, `mnist_mem_stats.sh`, `mnist_mem_monitor.py` in `mnist/` directory.
 
   * Calculate directly a privacy budget without launching any training with `torchdp/scripts/compute_dp_sgd_privcacy.py` (*This adaptation to PyTorch-DP I wrote from an equivalent script for TensorFlow is now included in PyTorch-DP repository* :smirk:).
 
