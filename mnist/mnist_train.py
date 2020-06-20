@@ -7,13 +7,20 @@ Runs MNIST training with differential privacy.
 """
 
 import argparse
-
+import os
 import numpy as np
+import datetime
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+
+# To fetch modules one level higher...
+import sys
+sys.path.append("..")
+#sys.path.append("../..")
+
 from torchdp import PrivacyEngine
 from torchvision import datasets, transforms
 from tqdm import tqdm
@@ -44,7 +51,7 @@ class SampleConvNet(nn.Module):
         return x
 
     def name(self):
-        return "SampleMNISTConvNet"
+        return "MNIST"
 
 
 def train(args, model, device, train_loader, optimizer, epoch):
@@ -191,6 +198,9 @@ def main():
 
     kwargs = {"num_workers": 1, "pin_memory": True}
 
+    # Create directory for model files
+    os.system("mkdir -p models")
+
     train_loader = torch.utils.data.DataLoader(
         datasets.MNIST(
             args.data_root,
@@ -218,6 +228,8 @@ def main():
         shuffle=True,
         **kwargs,
     )
+
+
     run_results = []
     for _ in range(args.n_runs):
         model = SampleConvNet().to(device)
@@ -245,14 +257,16 @@ def main():
         )
         )
 
-    repro_str = (
-        f"{model.name()}_{args.lr}_{args.sigma}_"
-        f"{args.max_per_sample_grad_norm}_{args.batch_size}_{args.epochs}"
-    )
-    torch.save(run_results, f"models/run_results_{repro_str}.pt")
-
     if args.save_model:
-        torch.save(model.state_dict(), f"models/mnist_cnn_{repro_str}.pt")
+        # File to export results
+        file = (
+            f"{model.name()}_lr{args.lr}_nm{args.sigma}_"
+            f"cl{args.max_per_sample_grad_norm}_bs{args.batch_size}_ep{args.epochs}_"
+
+        )
+        file += "noDP_" if args.disable_dp else "DP_"
+        file += str(datetime.datetime.today()).replace(' ','_')
+        torch.save(run_results, f"models/{file}.pt")
 
 
 if __name__ == "__main__":
