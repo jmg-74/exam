@@ -12,7 +12,7 @@ import torch.optim as optim
 from torchvision.models import *
 from collections import OrderedDict
 
-from my_nets import Net, Net2
+from my_nets import Net, Net2, param_show
 
 # ***************
     # 0: home-made net
@@ -24,20 +24,6 @@ MODE = 4
 # ***************
 EPOCHS = 20
 # ***************
-
-
-def param_show(model):
-    """Prints how many parameters the net has"""
-    total = 0
-    print('Trainable parameters:')
-    for name, param in model.named_parameters():
-        if param.requires_grad:
-            print(name, '\t', param.numel())
-            total += param.numel()
-    print("-----------------------")
-    print('Total', '\t', total, '\n')
-#    for p in model.parameters():
-#        print(p.shape)
 
 
 def train(model, optimizer, criterion, trainloader, epochs,
@@ -101,7 +87,6 @@ def test(model, testloader, categories=False, device="cpu"):
             outputs = model(images)
             _, predicted = torch.max(outputs, 1)
             c = (predicted == labels).squeeze()
-            print(c, ' / ', (predicted==labels)) ####################################
             for i in range(4):
                 label = labels[i]
                 class_correct[label] += c[i].item()
@@ -172,15 +157,12 @@ def main():
 
         if MODE > 2:
             # Add a new layer to train
-            last_child = list(net.children())[-1]
-#            print("\tLAST CHILD:", last_child)
-#            input_features = last_child[0].in_features
             input_features = net.classifier[6].in_features
             net.classifier[6] = nn.Linear(input_features, 10)
 
-            # Old version, not just a simple adaptation of last layer
+            # Old versions, not just a simple adaptation of last layer
 #            hidden_units = 512                                 # *** Better as a param ***
-#            classifier = nn.Sequential(OrderedDict([
+#            net.classifier = nn.Sequential(OrderedDict([
 #                                            ('fc1', nn.Linear(input_features, hidden_units)),
 #                                            ('relu', nn.ReLU()),
 #                                            ('fc2', nn.Linear(hidden_units, 10)),
@@ -193,13 +175,10 @@ def main():
 #                                          nn.Linear(input_features, 10),
 #                                          nn.LogSoftmax(dim=1))
 
-            net.classifier[6].requires_grad = True
 
-            #
-            last_child = list(net.children())[-1]
-            print("\tLAST CHILD (2) :", last_child)
+#            last_child = list(net.children())[-1]
+#            print("\tLAST CHILD:", last_child)
 
-#            net.classifier = classifier
             optimizer = optim.SGD(net.classifier.parameters(), lr=0.001, momentum=0.9)
 
 
