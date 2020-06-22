@@ -115,7 +115,7 @@ def main():
 
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
                                             download=True, transform=transform)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=4, # *** Better as a param ? ***
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=4, # *** Better as a param ! ***
                                               shuffle=True, num_workers=4)
 
     testset = torchvision.datasets.CIFAR10(root='./data', train=False,
@@ -159,6 +159,8 @@ def main():
             # Add a new layer to train
             input_features = net.classifier[6].in_features
             net.classifier[6] = nn.Linear(input_features, 10)
+#           net.classifier[6] = nn.Sequential( nn.Linear(input_features, 10), nn.LogSoftmax(dim=1) )
+
 
             # Old versions, not just a simple adaptation of last layer
 #            hidden_units = 512                                 # *** Better as a param ***
