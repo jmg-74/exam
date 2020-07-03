@@ -1,4 +1,6 @@
-The **notebook** presents the budget computation of Differential Privacy with PyTorch-DP and 
-links to properties in several articles for justifications. 
+# Directory content
 
-If you don't have any Jupyter server, you can run it online (quite slow to launch) thanks to [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jmg-74/exam/master?filepath=torchdp%2Fscripts%2FDP_Computation_in_SGM.ipynb "Tip: right clic / open in new tab...")
+* `compute_dp_sgd_privacy.py` can be used as a **shell script** to compute the privacy of a model trained with DP-SGD.
+ Its purpose is to get directly the privacy budget of an iterated Sampled Gaussian Mechanism. As it uses the same Rényi-DP accountant as PyTorch-DP does, the result is identical, but here no training phase is needed, neither is the instantiation of a model.
+
+*Note that the Jupyter notebook  `../../docs/DP_Computation_in_SGM.ipynb` demonstrate how to use this script and provides explainations about the calculations under the hood.*
