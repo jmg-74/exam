@@ -22,12 +22,12 @@ It is based on the [PyTorch-DP framework](https://github.com/facebookresearch/py
   results are stored in mem_flowers/
 
 3. An other attempt on **cifar10** dataset.
-  * First without DP : 
-    * (net = home-made simple model)
+  * First without DP: `cifar10.py`
+    * (net = home-made simple model imported from `my_net.py`)
     * net = fully pre-trained VGG16
     * net = not pre-trained VGG16
     * net =  pre-trained on "features" only, not on "classifier" layers.
-  * Then try to convert to DP version.
+  * Then converted to DP version: `dp_cifar10.py`
 
 4. Other stuff
   * Similar functions (than one of 'flowers') about MNIST dataset, 
