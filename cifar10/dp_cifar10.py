@@ -22,7 +22,7 @@ from torchdp import PrivacyEngine, utils
 
 
 
-# ===== Parameters (will be shell args) ===============================================
+# ===== Parameters (should be shell args) ===============================================
 class Argu():
     def __init__(self):
         self.batch_size = 4
@@ -214,27 +214,8 @@ def main():
             input_features = net.classifier[6].in_features
             net.classifier[6] = nn.Linear(input_features, 10)
 
-            # Old version (adding several layers)
-            #classifier = nn.Sequential(OrderedDict([
-            #                                ('fc1', nn.Linear(input_features, args.hidden_units)),
-            #                                ('relu', nn.ReLU()),
-            #                                ###('dropout', nn.Dropout(p=0.5)),
-            #                                ('fc2', nn.Linear(args.hidden_units, 10)),
-            #                                ###('relu2', nn.ReLU()),          ## Traces of
-            #                                ###('fc3', nn.Linear(256, 10)),   ##  experiments.
-            #                                ('output', nn.LogSoftmax(dim=1))
-            #                                ]))
-            #net.classifier = nn.Sequential( nn.Linear(input_features, hidden_units),
-            #                                          nn.ReLU(),
-            #                                          nn.Dropout(0.4),
-            #                                          nn.Linear(hidden_units, 10),
-            #                                          nn.Linear(input_features, 10),
-            #                                          nn.LogSoftmax(dim=1))
-            #optimizer = optim.SGD(net.classifier.parameters(), lr=0.args.learning_rate, momentum=0.9)
-
-            #                       net???
             dp_mod = net.classifier if args.mode == 4 else net
-            optimizer = optim.SGD(dp_mod.parameters(), lr=args.learning_rate, momentum=0.9) ##################################
+            optimizer = optim.SGD(dp_mod.parameters(), lr=args.learning_rate, momentum=0.9)
 
             # Verification
 #            last_child = list(net.children())[-1]

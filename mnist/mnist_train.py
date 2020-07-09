@@ -130,7 +130,7 @@ def main():
         type=int,
         default=10,
         metavar="N",
-        help="number of epochs to train (default: 14)",
+        help="number of epochs to train (default: 10)",
     )
     parser.add_argument(
         "-r",
@@ -185,7 +185,7 @@ def main():
         "--disable-dp",
         action="store_true",
         default=False,
-        help="Disable privacy training and just train with vanilla SGD",
+        help="Disable privacy training and only train with vanilla SGD",
     )
     parser.add_argument(
         "--data-root",
