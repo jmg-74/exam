@@ -1,5 +1,5 @@
 #!/bin/bash
-for HU in 32 64 512  # seq 32 8 128
+for HU in 32 64 512  # $(seq 32 8 128)
 do
   for BS in 2 3 4 5 6 7
   do

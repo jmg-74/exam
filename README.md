@@ -3,7 +3,7 @@ This repository's purpose is to present some productions for my exam...
 
 It is based on the [PyTorch-DP framework](https://github.com/facebookresearch/pytorch-dp) (*frozen in the 19th of June, 2020 version. Under [Apache License 2.0](https://github.com/facebookresearch/pytorch-dp/blob/master/LICENSE)*)
 
-1. A **notebook** that presents the budget computation of Differential Privacy with PyTorch-DP and links to properties in several articles for justifications. You can either [read it or download it](https://github.com/jmg-74/exam/blob/master/torchdp/scripts/DP_Computation_in_SGM.ipynb) to use on your own server or run it online (quite slow to launch) thanks to [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jmg-74/exam/master?filepath=torchdp%2Fscripts%2FDP_Computation_in_SGM.ipynb "Tip: right clic / open in new tab...")
+1. A **notebook** that presents the budget computation of Differential Privacy with PyTorch-DP and links to properties in several articles for justifications. You can either [read it or download it](https://github.com/jmg-74/exam/blob/master/docs/DP_Computation_in_SGM.ipynb) to use on your own server or run it online (quite slow to launch) thanks to [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jmg-74/exam/master?filepath=docs%2FDP_Computation_in_SGM.ipynb)
 
 2. An attempt to **convert "102-flowers" DL model to a DP version**, see `flowers/` directory.
   * First, once and for all : download data.
@@ -22,12 +22,12 @@ It is based on the [PyTorch-DP framework](https://github.com/facebookresearch/py
   results are stored in mem_flowers/
 
 3. An other attempt on **cifar10** dataset.
-  * First without DP : 
-    * (net = home-made simple model)
+  * First without DP: `cifar10.py`
+    * (net = home-made simple model imported from `my_net.py`)
     * net = fully pre-trained VGG16
     * net = not pre-trained VGG16
     * net =  pre-trained on "features" only, not on "classifier" layers.
-  * Then try to convert to DP version.
+  * Then converted to DP version: `dp_cifar10.py`
 
 4. Other stuff
   * Similar functions (than one of 'flowers') about MNIST dataset, 

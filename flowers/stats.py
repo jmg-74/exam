@@ -4,6 +4,8 @@
 
  Quick and dirty adaptation from train.py.
  Search `TUNING` in this code for hard coded parameters to try.
+
+  [Code left as is, not cleaned, to explicit what I've tried...]
 """
 
 import os
@@ -57,14 +59,14 @@ def main():
 
     # ===== TUNING ===========================================================
     # Hyperparameters to test
-    lr_range = [1e-4] #, 1e-5]                    #####  <== choice (enumeration)
-    batch_size_range = [64] #, 32, 128, 8, 4,  1] #####  <== choice (enumeration)
-    epochs = 6                                 #####  <== choice (1 value=max)
+    lr_range = [1e-4]                    #####  <== choice (enumeration)
+    batch_size_range = [32, 16, 8, 2] #, 32, 128, 8, 4,  1] #####  <== choice (enumeration)
+    epochs = 30                                 #####  <== choice (1 value=max)
     # Number of iteration for each parameter
-    iter = 3                                   #####  <== choice (single value)
+    iter = 1                                   #####  <== choice (single value)
 
     # DP or not DP, that is the question
-    args.disable_dp = True                     #####  <== choice (boolean)
+    args.disable_dp = False                     #####  <== choice (boolean)
     # ========================================================================
 
     # File to export results
@@ -124,14 +126,15 @@ def main():
                               f' => accuracy = {accur:.2f}%')
 
             # Sum up for identical settings, repeted `iter` times
-            acc_avg = np.average(accuracy_sum, axis=0)
-            for n_epoch, accur in enumerate(acc_avg, start=1):
-                    line = f'{lr}, {bs}, {n_epoch}, {accur:.2f}, {iter}\n'
-                    with open(file, 'a') as f:
-                        f.write(line)
-                    print(f'\t\t>>> Average on {iter} iterations >>>\tlr={lr}, bs={bs},'
-                          f' ×{n_epoch} epoch{"s" if n_epoch > 1 else " "}'
-                          f' => accuracy = {accur:.2f}%')
+            if iter > 1:
+                acc_avg = np.average(accuracy_sum, axis=0)
+                for n_epoch, accur in enumerate(acc_avg, start=1):
+                        line = f'{lr}, {bs}, {n_epoch}, {accur:.2f}, {iter}\n'
+                        with open(file, 'a') as f:
+                            f.write(line)
+                        print(f'\t\t>>> Average on {iter} iterations >>>\tlr={lr}, bs={bs},'
+                              f' ×{n_epoch} epoch{"s" if n_epoch > 1 else " "}'
+                              f' => accuracy = {accur:.2f}%')
 
 
 if __name__ == "__main__":

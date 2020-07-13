@@ -8,6 +8,7 @@ QUICK AND DIRTY APPROACH : LOOPS ARE CUT ONCE STATS HAVE BEEN READ
  Monitoring : see ## heading lines. To (un)set printing, modify
   the default value of `silent` parameter in `_mem_monitor()`.
 
+  [Code left as is, not cleaned, to explicit what I've tried...]
 """
 import argparse
 import os
@@ -261,7 +262,8 @@ def hybrid_model(arch="vgg16", hidden_units=4096, class_idx_mapping=None, args=N
     model = model.to(args.device)
 ##    _mem_monitor("HYBRID_MODEL : model loaded ", args.device)   # ===== Monitoring =====
 
-    optimizer = optim.Adam(model.classifier.parameters(), lr=args.learning_rate)
+#    optimizer = optim.Adam(model.classifier.parameters(), lr=args.learning_rate)
+    optimizer = optim.SGD(model.classifier.parameters(), lr=args.learning_rate)
 
     if not args.disable_dp:
             privacy_engine = PrivacyEngine(

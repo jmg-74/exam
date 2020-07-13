@@ -294,15 +294,6 @@ def main():
         )
         )
 
-#    repro_str = (
-#        f"{model.name()}_{args.lr}_{args.sigma}_"
-#        f"{args.max_per_sample_grad_norm}_{args.batch_size}_{args.epochs}"
-#    )
-#    torch.save(run_results, f"run_results_{repro_str}.pt")
-
-#    if args.save_model:
-#        torch.save(model.state_dict(), f"mnist_cnn_{repro_str}.pt")
-
 ##    # Memory stats
     infos['BS'] = args.batch_size
     infos['DP'] = 'N' if args.disable_dp else 'Y'

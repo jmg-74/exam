@@ -159,27 +159,6 @@ def main():
             # Add a new layer to train
             input_features = net.classifier[6].in_features
             net.classifier[6] = nn.Linear(input_features, 10)
-#           net.classifier[6] = nn.Sequential( nn.Linear(input_features, 10), nn.LogSoftmax(dim=1) )
-
-
-            # Old versions, not just a simple adaptation of last layer
-#            hidden_units = 512                                 # *** Better as a param ***
-#            net.classifier = nn.Sequential(OrderedDict([
-#                                            ('fc1', nn.Linear(input_features, hidden_units)),
-#                                            ('relu', nn.ReLU()),
-#                                            ('fc2', nn.Linear(hidden_units, 10)),
-#                                            ('output', nn.LogSoftmax(dim=1))
-#                                            ]))
-#            net.classifier = nn.Sequential( nn.Linear(input_features, hidden_units),
-#                                          nn.ReLU(),
-#                                          nn.Dropout(0.4),
-#                                          nn.Linear(hidden_units, 10),
-#                                          nn.Linear(input_features, 10),
-#                                          nn.LogSoftmax(dim=1))
-
-
-#            last_child = list(net.children())[-1]
-#            print("\tLAST CHILD:", last_child)
 
             optimizer = optim.SGD(net.classifier.parameters(), lr=0.001, momentum=0.9)
 

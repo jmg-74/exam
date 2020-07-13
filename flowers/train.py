@@ -11,6 +11,8 @@ For optional parameters, try:    ./train.py -h
 To (un)set GPU memory monitoring (evaluations: see ## heading lines),
  see _mem_monitor()'s `silent` default boolean value in this code.
  Just printed on std output, no file created here from these stats.
+
+  [Code left as is, not cleaned, to explicit what I've tried...]
 """
 import argparse
 import os
@@ -61,7 +63,6 @@ def test(model, testloader, criterion, device):
     testloader_size = len(testloader.dataset)
     accuracy = correct / testloader_size
     loss = losses / len(testloader) # consistent with training loss
-
 ##    _mem_monitor("TEST 3 (END)", device)
 
     return loss, accuracy
@@ -125,7 +126,7 @@ def train(model, trainloader, testloader, epochs, print_every, criterion, optimi
 
                 running_loss, running_step = 0, 0
 
-        # End of an epoch
+        # End of an epoch ;-)
         if detail:
             print()
         else:
@@ -259,11 +260,12 @@ def hybrid_model(arch="vgg16", hidden_units=4096, class_idx_mapping=None, args=N
     model = model.to(args.device)
 ##    _mem_monitor("1. HYBRID_MODEL : model loaded ", args.device)    # ===== Monitoring =====
 
-    optimizer = optim.Adam(model.classifier.parameters(), lr=args.learning_rate)
+    #optimizer = optim.Adam(model.classifier.parameters(), lr=args.learning_rate)
+    optimizer = optim.SGD(model.classifier.parameters(), lr=args.learning_rate)
 
     if not args.disable_dp:
             privacy_engine = PrivacyEngine(
-                classifier, ### = model. Idem with classifier
+                classifier, ### = model, idem with classifier
                 batch_size=args.batch_size,
                 sample_size=args.sample_size,
                 alphas=[1 + x / 10.0 for x in range(1, 100)] + list(range(12, 64)),
@@ -313,7 +315,7 @@ def main():
                     default=64,
                     type=int)
     ap.add_argument("--learning-rate",
-                    help="Learning rate for Adam optimizer (default: 0.001)",
+                    help="Learning rate for optimizer (default: 0.001)",
                     default=0.001,
                     type=float)
     ap.add_argument("--epochs",
@@ -360,7 +362,7 @@ def main():
     # Create directory for model files: checkpoint.pth and best_model.pth
     os.system("mkdir -p " + args.model_dir)
 
-    # Load the dataset into a dataloader
+    # Load the dataset into a dataloader (train / test = 6552 / 818 img)
     trainloader, testloader, mapping = get_data(data_folder=args.data_dir,
                                          batch_size=args.batch_size,
                                          test_batch_size=args.test_batch_size)
